@@ -46,6 +46,7 @@ RUN set -ex \
 		wget \
 		xz-utils \
 		zlib1g-dev \
+		curl \
 # as of Stretch, "gpg" is no longer included by default
 		$(command -v gpg > /dev/null || echo 'gnupg dirmngr') \
 	\
@@ -94,7 +95,9 @@ RUN set -ex \
 	\
 	&& python3 --version \
 # Because it requires gcc
-    && python3 -mpip install manga-py -U \
+        && python3 -mpip install manga-py -U \
+        && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+	&& apt-get install -y nodejs \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 	&& rm -rf /var/lib/apt/lists/* \
 	\
