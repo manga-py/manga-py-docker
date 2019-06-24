@@ -23,6 +23,13 @@ ARG HOST_UID=1000
 ARG HOST_GID=1000
 ARG HOST_USER=manga-user
 ARG HOST_GROUP=manga-group
+ARG HOME='/home/manga'
+
+RUN mkdir $HOME -p; \
+    chown $HOST_USER:$HOST_GROUP $HOME
+
+RUN touch $HOME/.bashrc; \
+    chown $HOST_USER:$HOST_GROUP $HOME/.bashrc
 
 RUN set -ex \
 	\
@@ -47,6 +54,8 @@ RUN set -ex \
 		xz-utils \
 		zlib1g-dev \
 		curl \
+# python autocomplete utilite
+		python3-argcomplete \
 # as of Stretch, "gpg" is no longer included by default
 		$(command -v gpg > /dev/null || echo 'gnupg dirmngr') \
 	\
@@ -137,11 +146,8 @@ RUN groupadd -g $HOST_GID $HOST_GROUP \
     && groupadd sudonopswd \
     && useradd -m -l -g $HOST_GROUP -u $HOST_UID $HOST_USER
 
-RUN mkdir /var/tmp/manga -p; \
-    chown $HOST_USER:$HOST_GROUP /var/tmp/manga
-
 USER $HOST_USER
-WORKDIR /var/tmp/manga
+WORKDIR $HOME
 
 RUN echo 'Manga-py version: '; \
     manga-py --version; \
