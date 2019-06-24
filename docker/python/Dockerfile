@@ -25,6 +25,10 @@ ARG HOST_USER=manga-user
 ARG HOST_GROUP=manga-group
 ARG HOME='/home/manga'
 
+RUN groupadd -g $HOST_GID $HOST_GROUP \
+    && groupadd sudonopswd \
+    && useradd -m -l -g $HOST_GROUP -u $HOST_UID $HOST_USER
+
 RUN mkdir $HOME -p; \
     chown $HOST_USER:$HOST_GROUP $HOME
 
@@ -141,10 +145,6 @@ RUN set -ex; \
 			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
-
-RUN groupadd -g $HOST_GID $HOST_GROUP \
-    && groupadd sudonopswd \
-    && useradd -m -l -g $HOST_GROUP -u $HOST_UID $HOST_USER
 
 USER $HOST_USER
 WORKDIR $HOME
